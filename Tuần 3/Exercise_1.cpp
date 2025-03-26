@@ -40,8 +40,7 @@ int LinerSearch2(int n, int *a, int val)
         i++;
     if (i == n)
         return -1;
-    else
-        return i;
+    return i;
 }
 // End Algorithms 2
 
@@ -78,8 +77,12 @@ int Interpolation_Search(int n, int *a, int val)
     int l = 0;
     int r = n - 1;
     int ans = -1;
-    while (l <= r)
+    while (l <= r && val >= a[l] && val <= a[r])
     {
+        if (l == r) {
+            if (a[l] == val) return l;
+            return -1;
+        }
         int pivot = l + ((val - a[l]) * (r - l)) / (a[r] - a[l]);
         if (val == a[pivot])
         {
