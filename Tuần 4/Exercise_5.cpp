@@ -45,7 +45,7 @@ int main() {
 
     int n, *a , *b;
     
-    n = Rand(10, 10);
+    n = Rand(1e5, 1e6);
 
     a = new int[n];
     b = new int[n];
