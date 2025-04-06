@@ -45,51 +45,73 @@ void MergeSort(int n,int * a);
 void CountingSort(int n, int * a);
 void RadixSort(int n,int * a);
 void FlashSort(int n,int * a);
+bool isTangDan(int n,int * a);
 
 int main() {
 
     int n, *a , *b;
     
-    n = Rand(5, 5);
+    n = Rand(1e4, 5e4);
 
     a = new int[n];
     b = new int[n];
 
     for (int i = 0;i < n;i++) {
-        a[i] = Rand(1, 1e6);
+        a[i] = Rand(0, 1e6);
     }
 
     double Merge_Time, Count_Time, Radix_Time, Flash_Time;
 
     ResetArr(n, a, b);
-    printArr(n, b);
+    //printArr(n, b);
     output << "Merge Sort Time: ";
     Merge_Time = Counting_Time(MergeSort, n, b);
     output << fixed << setprecision(3) << Merge_Time << " seconds\n";
-    printArr(n, b);
+    //printArr(n, b);
+    //output << isTangDan(n, b) << endl;
 
     ResetArr(n, a, b);
-    printArr(n, b);
+    //printArr(n, b);
     output << "Counting Sort Time: ";
     Count_Time = Counting_Time(CountingSort, n, b);
     output << fixed << setprecision(3) << Count_Time << " seconds\n";
-    printArr(n,b);
+    //printArr(n,b);
+    //output << isTangDan(n, b) << endl;
 
     ResetArr(n, a, b);
-    printArr(n,b);
+    //printArr(n,b);
     output << "Radix Sort Time: ";
     Radix_Time = Counting_Time(RadixSort, n, b);
     output << fixed << setprecision(3) << Radix_Time << " seconds\n";
-    printArr(n,b);
+    //printArr(n,b);
+    //output << isTangDan(n, b) << endl;
 
     ResetArr(n, a, b);
+    // printArr(n,b);
     output << "Flash Sort Time: ";
     Flash_Time = Counting_Time(FlashSort, n, b);
     output << fixed << setprecision(3) << Flash_Time << " seconds\n";
+    // printArr(n,b);
+    //output << isTangDan(n, b) << endl;
 
-    output << Flash_Time << endl;
+    output << "The fastest algorithm: ";
+    if (Merge_Time <= Count_Time && Merge_Time <= Radix_Time && Merge_Time <= Flash_Time) {
+        output << "Merge_Sort\n";
+    } else if (Merge_Time >= Count_Time && Count_Time <= Radix_Time && Count_Time <= Flash_Time) {
+        output << "Counting_Sort\n";
+    } else if (Radix_Time <= Count_Time && Merge_Time >= Radix_Time && Radix_Time <= Flash_Time) {
+        output << "Radix Sort\n";
+    } else output << "Flash Sort\n";
+
+    output << "The lowest algorithm: ";
+    if (Merge_Time >= Count_Time && Merge_Time >= Radix_Time && Merge_Time >= Flash_Time) {
+        output << "Merge_Sort\n";
+    } else if (Merge_Time <= Count_Time && Count_Time >= Radix_Time && Count_Time >= Flash_Time) {
+        output << "Counting_Sort\n";
+    } else if (Radix_Time >= Count_Time && Merge_Time <= Radix_Time && Radix_Time >= Flash_Time) {
+        output << "Radix Sort\n";
+    } else output << "Flash Sort\n";
 }
-
 
 long long Rand(long long L, long long R) {
     assert(L <= R);
@@ -217,7 +239,7 @@ void InsertionSort(int * a, int l, int r) {
     for (int i = l + 1;i <= r;i++) {
         int val = a[i];
         int pos = i - 1;
-        while (pos >= 0 && a[pos] > val) {
+        while (pos >= l && a[pos] > val) {
             a[pos + 1] = a[pos];
             pos--;
         }
@@ -235,30 +257,36 @@ void FlashSort(int n,int * a) {
     if (Max == Min) return;
 
     int m = 0.45 * n;
-    int * L = new int[m]();
+    int * L = new int[m];
+    for (int i = 0;i < m;i++) {
+        L[i] = 0;
+    }
 
     for (int i = 0;i < n;i++) {
-        int k = (m - 1) * (a[i] - Min) / (Max - Min);
+        int k = 1ll * (m - 1) * (a[i] - Min) / (Max - Min);
         ++L[k];
     }
 
-    for (int i = 1;i < n;i++) {
+    for (int i = 1;i < m;i++) {
         L[i] += L[i - 1];
     }
 
     int move = 0, i = 0;
     while (move < n - 1) {
-        int k = (m - 1) * (a[i] - Min) / (Max - Min);
+        int k = 1ll * (m - 1) * (a[i] - Min) / (Max - Min);
 
         while (i >= L[k]) {
             i++;
-            k = (m - 1) * (a[i] - Min) / (Max - Min);
+            if (i >= n) break;
+            k = 1ll * (m - 1) * (a[i] - Min) / (Max - Min);
         }
+
+        if (i >= n) break;
 
         int Flash = a[i];
 
         while (i != L[k]) {
-            k = (m - 1) * (a[i] - Min) / (Max - Min);
+            k = 1ll * (m - 1) * (a[i] - Min) / (Max - Min);
             --L[k];
             int hold = a[L[k]];
             a[L[k]] = Flash;
@@ -267,6 +295,8 @@ void FlashSort(int n,int * a) {
         }
     }
     InsertionSort(a, 0, n - 1);
+
+    delete[] L;
 }
 
 void printArr(int n,int * a) {
@@ -274,4 +304,11 @@ void printArr(int n,int * a) {
         output << a[i] << ' ';
     }
     output << endl;
+}
+
+bool isTangDan(int n,int * a) {
+    for (int i = 1;i < n;i++) {
+        if (a[i - 1] > a[i]) return false;
+    }
+    return true;
 }
