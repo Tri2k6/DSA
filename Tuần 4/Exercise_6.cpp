@@ -34,6 +34,7 @@ template<class X, class Y>
 mt19937_64 rd(chrono::steady_clock::now().time_since_epoch().count());
 #define rand rd
 
+void printArr(int n,int * a);
 long long Rand(long long L, long long R);
 void swap(int & a, int & b);
 void ResetArr(int n, int * a, int *b);
@@ -49,7 +50,7 @@ int main() {
 
     int n, *a , *b;
     
-    n = Rand(10, 10);
+    n = Rand(5, 5);
 
     a = new int[n];
     b = new int[n];
@@ -61,26 +62,32 @@ int main() {
     double Merge_Time, Count_Time, Radix_Time, Flash_Time;
 
     ResetArr(n, a, b);
+    printArr(n, b);
     output << "Merge Sort Time: ";
     Merge_Time = Counting_Time(MergeSort, n, b);
     output << fixed << setprecision(3) << Merge_Time << " seconds\n";
+    printArr(n, b);
 
     ResetArr(n, a, b);
+    printArr(n, b);
     output << "Counting Sort Time: ";
     Count_Time = Counting_Time(CountingSort, n, b);
     output << fixed << setprecision(3) << Count_Time << " seconds\n";
+    printArr(n,b);
 
     ResetArr(n, a, b);
+    printArr(n,b);
     output << "Radix Sort Time: ";
     Radix_Time = Counting_Time(RadixSort, n, b);
     output << fixed << setprecision(3) << Radix_Time << " seconds\n";
+    printArr(n,b);
 
     ResetArr(n, a, b);
     output << "Flash Sort Time: ";
     Flash_Time = Counting_Time(FlashSort, n, b);
     output << fixed << setprecision(3) << Flash_Time << " seconds\n";
 
-
+    output << Flash_Time << endl;
 }
 
 
@@ -260,4 +267,11 @@ void FlashSort(int n,int * a) {
         }
     }
     InsertionSort(a, 0, n - 1);
+}
+
+void printArr(int n,int * a) {
+    for (int i = 0;i < n;i++) {
+        output << a[i] << ' ';
+    }
+    output << endl;
 }
