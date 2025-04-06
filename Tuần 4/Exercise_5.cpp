@@ -45,7 +45,7 @@ int main() {
 
     int n, *a , *b;
     
-    n = Rand(1e4, 5e4);
+    n = Rand(10, 10);
 
     a = new int[n];
     b = new int[n];
@@ -57,22 +57,39 @@ int main() {
 
     double Heap, Quick;
     ResetArr(n, a, b);
+    // for (int i = 0;i < n;i++) {
+    //     output << b[i] << ' ';
+    // }
+    // output << endl;
     output << "Heap Sort: ";
     Heap = Counting_Time(HeapSort, n, b);
     output << fixed << setprecision(3) << Heap << " seconds\n";
 
+    // for (int i = 0;i < n;i++) {
+    //     output << b[i] << ' ';
+    // }
+    // output << endl;
+
     ResetArr(n,a,b);
+
+    // for (int i = 0;i < n;i++) {
+    //     output << b[i] << ' ';
+    // }
+    // output << endl;
+
     output << "Quick Sort: ";
     Quick = Counting_Time(QuickSort, n, b);
     output << fixed << setprecision(3) << Quick << " seconds\n";
 
-    output << "The fastest algorithm: ";
-    if (Quick <= Heap) output << "Quick Sort\n";
-    else output << "Heap Sort\n";
+    // for (int i = 0;i < n;i++) {
+    //     output << b[i] << ' ';
+    // }
 
-    output << "The slowest algorithm: ";
-    if (Heap > Quick) output << "Heap Sort\n";
-    else output << "Quick Sort\n";
+    if (Quick <= Heap) {
+        output << "The fastest algorithm: Quick Sort\nThe slowest algorithm: Heap Sort";
+    } else {
+        output << "The fastest algorithm: Heap Sort\nThe slowest algorithm: Quick Sort";
+    }
 
     return 0;
 }
