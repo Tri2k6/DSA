@@ -53,12 +53,12 @@ struct Person {
     }
     friend bool operator > (Person a, Person b) {
         if (a.GPA() != b.GPA()) return a.GPA() > b.GPA();
-        if (a.kt1 != a.kt1) return a.kt1 > b.kt1;
+        if (a.kt1 != b.kt1) return a.kt1 > b.kt1;
         return a.kt2 > b.kt2;
     }
     friend bool operator < (Person a, Person b) {
         if (a.GPA() != b.GPA()) return a.GPA() < b.GPA();
-        if (a.kt1 != a.kt1) return a.kt1 < b.kt1;
+        if (a.kt1 != b.kt1) return a.kt1 < b.kt1;
         return a.kt2 < b.kt2;
     }
 };
@@ -202,29 +202,30 @@ int FindOptions(int m, vector<pii> & Options, int val) {
     return ans;
 }
 
-// int Partition_Candidates(vector<Person> & Candidates, int l,int r) {
-//     Person Pivot;
-//     Pivot.Copy(Candidates[r]);
-//     int i = l - 1;
-//     for (int j = l;j < r;j++) {
-//         if (Options[j] < pivot) {
-//             i++;
-//             swap(Options[i], Options[j]);
-//         }
-//     }
-//     ++i;
-//     swap(Options[i], Options[r]);
-//     return i;
-// }
-
-void Candidates_Sort(vector<Person>& Candidates) {
-    for (int i = 0;i < Candidates.size();i++) {
-        for (int j = i + 1; j < Candidates.size();j++) {
-            if (Candidates[i] < Candidates[j]) {
-                swapPerson(Candidates[i], Candidates[j]);
-            }
+int Partition_Candidates(vector<Person> & Candidates, int l,int r) {
+    Person Pivot;
+    Pivot.Copy(Candidates[r]);
+    int i = l - 1;
+    for (int j = l;j < r;j++) {
+        if (Candidates[j] > Pivot) {
+            i++;
+            swapPerson(Candidates[i], Candidates[j]);
         }
     }
+    ++i;
+    swapPerson(Candidates[i], Candidates[r]);
+    return i;
+}
+
+void CandidateSort(vector<Person>& Candidates,int l,int r) {
+    if (l >= r) return;
+    int pivot = Partition_Candidates(Candidates, l, r);
+    CandidateSort(Candidates, l, pivot - 1);
+    CandidateSort(Candidates, pivot + 1, r);
+}
+
+void Candidates_Sort(vector<Person>& Candidates) {
+    CandidateSort(Candidates, 0, Candidates.size() - 1);
 }
 
 int Process_1Person(int m, Person a, vector<pii> & Options,vector<vector<Person>> & Listed_Candidates) {

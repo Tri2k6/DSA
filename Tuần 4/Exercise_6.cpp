@@ -51,7 +51,7 @@ int main() {
 
     int n, *a , *b;
     
-    n = Rand(1e4, 5e4);
+    n = Rand(5e4, 2e6);
 
     a = new int[n];
     b = new int[n];
@@ -92,7 +92,7 @@ int main() {
     Flash_Time = Counting_Time(FlashSort, n, b);
     output << fixed << setprecision(3) << Flash_Time << " seconds\n";
     // printArr(n,b);
-    //output << isTangDan(n, b) << endl;
+    // output << isTangDan(n, b) << endl;
 
     output << "The fastest algorithm: ";
     if (Merge_Time <= Count_Time && Merge_Time <= Radix_Time && Merge_Time <= Flash_Time) {
@@ -256,7 +256,7 @@ void FlashSort(int n,int * a) {
 
     if (Max == Min) return;
 
-    int m = 0.45 * n;
+    int m = int(0.43 * n);
     int * L = new int[m];
     for (int i = 0;i < m;i++) {
         L[i] = 0;
@@ -286,15 +286,20 @@ void FlashSort(int n,int * a) {
         int Flash = a[i];
 
         while (i != L[k]) {
-            k = 1ll * (m - 1) * (a[i] - Min) / (Max - Min);
+            k = 1ll * (m - 1) * (Flash - Min) / (Max - Min);
             --L[k];
-            int hold = a[L[k]];
-            a[L[k]] = Flash;
-            Flash = hold;
+            swap(a[L[k]], Flash);
             move++; 
         }
     }
-    InsertionSort(a, 0, n - 1);
+
+    for (int k = 0;k < m;k++) {
+        int start = (k == 0) ? 0 : L[k - 1];
+        int end = L[k] - 1;
+        if (start < end) InsertionSort(a, start, end);
+    }
+
+    // InsertionSort(a, 0, n - 1);
 
     delete[] L;
 }
@@ -308,7 +313,7 @@ void printArr(int n,int * a) {
 
 bool isTangDan(int n,int * a) {
     for (int i = 1;i < n;i++) {
-        if (a[i - 1] > a[i]) return false;
+        if (a[i - 1] > a[i]) return output << a[i - 1] << ' ' << a[i], false;
     }
     return true;
 }
