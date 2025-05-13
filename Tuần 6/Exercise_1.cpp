@@ -5,7 +5,8 @@ using namespace std;
 
 struct Node {
     int val;
-    Node * left, right;
+    Node * left;
+    Node * right;
 };
 
 Node* newNode(int data) {
@@ -17,30 +18,23 @@ Node* newNode(int data) {
 }
 
 Node* insert(Node* root,int data) {
-    Node *tmp = newNode(data);
-    Node* p = root;
-    while (p) {
-        if (p->val == data) return p;
-        if (data < p->val) {
-            if (p->left) p = p->left;
-            else {
-                p->left = tmp;
-                return tmp;
-            }
-        }
-
-    }
-    return tmp;
+    if (!root) {
+        root = newNode(data);
+        return root;
+    } 
+    if (root->val == data) return root;
+    if (root->val > data) return insert(root->left,data);
+    return insert(root->right,data);
 }
 
 Node* search(Node* root, int data) {
     if (root == NULL) return NULL;
-    if (root->val == data) return Node;
+    if (root->val == data) return root;
     if (data < root->val) return search(root->left, data);
     return search(root->right,data);
 }
 
-Node* delete(Node* root, int data) {
+Node* deleteNode(Node* root, int data) {
 
 }
 
@@ -71,7 +65,7 @@ void NLR(Node* root) {
     while (q.size()) {
         Node * u = q.front();
         q.pop();
-        cout << u->val << ' ';s
+        cout << u->val << ' ';
         if (u->left) q.push(u->left);
         if (u->right) q.push(u->right);
     }
@@ -118,23 +112,23 @@ int countGreater(Node* root,int x) {
 
 int main() {
 
-    n = 6;
-    int * a = {8,6,5,7,10,9};
+    int n = 6;
+    int * a = new int [6] {8,6,5,7,10,9};
 
     Node * Root = NULL;
 
     for (int i = 0;i < n;i++) {
-        insert(root,a[i]);
+        insert(Root,a[i]);
     }
 
-    NLR(root);
+    NLR(Root);
     cout << endl;
-    LNR(root);
+    LNR(Root);
     cout << endl;
-    LRN(root);
+    LRN(Root);
     cout << endl;
-    delete(root,8);
-    LevelOrder(root);
+    deleteNode(Root,8);
+    LevelOrder(Root);
 
     return 0;
 }
