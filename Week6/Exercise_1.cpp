@@ -17,7 +17,7 @@ Node* newNode(int data) {
     return p;
 }
 
-Node* insert(Node* root,int data) {
+Node* insert(Node* & root,int data) {
     if (!root) {
         root = newNode(data);
         return root;
@@ -34,8 +34,34 @@ Node* search(Node* root, int data) {
     return search(root->right,data);
 }
 
-Node* deleteNode(Node* root, int data) {
+void FindMax(Node *& Root, Node* &Y) {
+    if (Y->right) {
+        FindMax(Root,Y->right);
+    } {
+        Root->val = Y->val;
+        Root = Y;
+        Y = Y->left;
+    }
+}
 
+Node* deleteNode(Node* &root, int data) {
+    if (!root) return NULL;
+    if (data < root->val) return deleteNode(root->left, data);
+    if (data > root->val) return deleteNode(root->right,data);
+    if (data == root->val) {
+        Node * p = root;
+        if (!root->left) {
+            root = root->right;
+        }  else if (!root->right) {
+            root = root->left;
+        } else {
+            Node * Y = root->left;
+            FindMax(p, Y);
+        }
+        delete(p);
+        
+    }
+    return NULL;
 }
 
 void NLR(Node* root) {
@@ -99,13 +125,13 @@ int countLeaf(Node* root) {
 }
 
 int countLess(Node* root, int x) {
-    if (!root) return;
+    if (!root) return 0;
     if (root->val < x) return countNode(root->left) + countLess(root->right, x);
     return countLess(root->left,x);
 }
 
 int countGreater(Node* root,int x) {
-    if (!root) return;
+    if (!root) return 0;
     if (root->val > x) return countNode(root->right) + countGreater(root->left, x);
     return countGreater(root->right, x);
 }
