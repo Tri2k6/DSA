@@ -167,22 +167,27 @@ int main() {
         Root = insert(Root,a[i]);
     }
 
+    int x = 7;
+
+    cout << "Pre-order: ";
     NLR(Root);
     cout << endl;
+    cout << "In-order: ";
     LNR(Root);
     cout << endl;
+    cout << "Post-order: ";
     LRN(Root);
     cout << endl;
+    cout << "Level-order: "; LevelOrder(Root); cout << endl;
     Root = deleteNode(Root,8);
-    LevelOrder(Root);
-    cout << endl;
-    cout << height(Root) << endl;
-    cout << countNode(Root) << endl;
-    cout << countInternal(Root) << endl;
-    cout << sumNode(Root) << endl;
-    cout << countLeaf(Root) << endl;
-    cout << countLess(Root,7) << endl;
-    cout << countGreater(Root,7) << endl;
+    cout << "Level-order after deletion: "; LevelOrder(Root); cout << endl;
+    cout << "Height: " << height(Root) << endl;
+    cout << "Total nodes: " << countNode(Root) << endl;
+    cout << "Internal nodes: " << countInternal(Root) << endl;
+    cout << "Sum of all nodes: " << sumNode(Root) << endl;
+    cout << "Leaf Node: " << countLeaf(Root) << endl;
+    cout << "Nodes less than " << x << ": "  << countLess(Root,7) << endl;
+    cout << "Nodes greater than " << x << ": " << countGreater(Root,7) << endl;
 
     return 0;
 }
