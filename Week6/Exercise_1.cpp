@@ -17,14 +17,30 @@ Node* newNode(int data) {
     return p;
 }
 
-Node* insert(Node* & root,int data) {
+Node* insert(Node* root,int data) {
     if (!root) {
         root = newNode(data);
         return root;
     } 
-    if (root->val == data) return root;
-    if (root->val > data) return insert(root->left,data);
-    return insert(root->right,data);
+    Node * p = root;
+    Node * tmp = newNode(data);
+    while (p) {
+        if (p->val == data) break;
+        if (data < p->val) {
+            if (!p->left) {
+                p->left = tmp;
+            }
+            p = p->left;
+        } else {
+            if (!p->right) {
+                p->right = tmp;
+                break;
+            }
+            p = p->right;
+        }
+
+    }
+    return root;
 }
 
 Node* search(Node* root, int data) {
@@ -34,34 +50,37 @@ Node* search(Node* root, int data) {
     return search(root->right,data);
 }
 
-void FindMax(Node *& Root, Node* &Y) {
-    if (Y->right) {
-        FindMax(Root,Y->right);
-    } {
-        Root->val = Y->val;
-        Root = Y;
-        Y = Y->left;
-    }
-}
+Node* FindMax(Node * Root) {
+    if (!Root) return NULL;
+    if (!Root->left && !Root->right) return Root;
+    return FindMax(Root->right);
+} 
 
-Node* deleteNode(Node* &root, int data) {
+Node* deleteNode(Node* root, int data) {
     if (!root) return NULL;
-    if (data < root->val) return deleteNode(root->left, data);
-    if (data > root->val) return deleteNode(root->right,data);
-    if (data == root->val) {
-        Node * p = root;
-        if (!root->left) {
-            root = root->right;
-        }  else if (!root->right) {
-            root = root->left;
+    if (data < root->val) {
+        root->left = deleteNode(root->left, data);
+    } else if (data > root->val) {
+        root->right = deleteNode(root->right,data);
+    } else {
+        if (!root->left && !root->right) {
+            delete root;
+            return NULL;
+        } else if (!root->left) {
+            Node * tmp = root->right;
+            delete root;
+            return tmp;
+        } else if (!root->right) {
+            Node * tmp = root->left;
+            delete root;
+            return tmp;
         } else {
-            Node * Y = root->left;
-            FindMax(p, Y);
+            Node * tmp = FindMax(root->left);
+            root->val = tmp->val;
+            root->left = deleteNode(root->left, tmp->val);
         }
-        delete(p);
-        
     }
-    return NULL;
+    return root;
 }
 
 void NLR(Node* root) {
@@ -86,14 +105,15 @@ void NLR(Node* root) {
  }
 
  void LevelOrder(Node* root) {
-    queue<Node*> q;
-    q.push(root);
+    queue<pair<Node*, int>> q;
+    q.push({root,0});
     while (q.size()) {
-        Node * u = q.front();
+        Node * u = q.front().first;
+        int level = q.front().second;
         q.pop();
         cout << u->val << ' ';
-        if (u->left) q.push(u->left);
-        if (u->right) q.push(u->right);
+        if (u->left) q.push({u->left,level + 1});
+        if (u->right) q.push({u->right,level + 1});
     }
  }
 
@@ -126,13 +146,13 @@ int countLeaf(Node* root) {
 
 int countLess(Node* root, int x) {
     if (!root) return 0;
-    if (root->val < x) return countNode(root->left) + countLess(root->right, x);
+    if (root->val < x) return 1 + countLess(root->left,x) + countLess(root->right, x);
     return countLess(root->left,x);
 }
 
 int countGreater(Node* root,int x) {
     if (!root) return 0;
-    if (root->val > x) return countNode(root->right) + countGreater(root->left, x);
+    if (root->val > x) return 1 + countGreater(root->right,x) + countGreater(root->left, x);
     return countGreater(root->right, x);
 }
 
@@ -144,7 +164,7 @@ int main() {
     Node * Root = NULL;
 
     for (int i = 0;i < n;i++) {
-        insert(Root,a[i]);
+        Root = insert(Root,a[i]);
     }
 
     NLR(Root);
@@ -153,8 +173,16 @@ int main() {
     cout << endl;
     LRN(Root);
     cout << endl;
-    deleteNode(Root,8);
+    Root = deleteNode(Root,8);
     LevelOrder(Root);
+    cout << endl;
+    cout << height(Root) << endl;
+    cout << countNode(Root) << endl;
+    cout << countInternal(Root) << endl;
+    cout << sumNode(Root) << endl;
+    cout << countLeaf(Root) << endl;
+    cout << countLess(Root,7) << endl;
+    cout << countGreater(Root,7) << endl;
 
     return 0;
 }
