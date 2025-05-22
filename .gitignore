@@ -1,0 +1,11 @@
+Task.exe
+Task.out
+Task.inp
+*.zip 
+*.txt
+Answer/
+Testcase/
+Note/
+Visual-Studio-Code/
+.vscode/
+Project/
